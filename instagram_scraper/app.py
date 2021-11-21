@@ -796,7 +796,12 @@ class InstagramScraper(object):
                 if self.story_has_selected_media_types(item) and self.is_new_media(item):
                     item['username'] = username
                     item['shortcode'] = ''
-                    future = executor.submit(self.worker_wrapper, self.download, item, dst)
+                    dstx = dst
+                    if item['is_video'] is False:
+                        dstx = dstx + '/story/images'
+                    else:
+                        dstx = dstx + '/story/videos'
+                    future = executor.submit(self.worker_wrapper, self.download, item, dstx)
                     future_to_item[future] = item
 
                 iter = iter + 1
@@ -831,7 +836,12 @@ class InstagramScraper(object):
             else:
                 if self.has_selected_media_types(item) and self.is_new_media(item):
                     item['username']=username
-                    future = executor.submit(self.worker_wrapper, self.download, item, dst)
+                    dstx = dst
+                    if item['is_video'] is False:
+                        dstx = dstx + '/posts/images'
+                    else:
+                        dstx = dstx + '/posts/videos'
+                    future = executor.submit(self.worker_wrapper, self.download, item, dstx)
                     future_to_item[future] = item
 
             if self.include_location:
